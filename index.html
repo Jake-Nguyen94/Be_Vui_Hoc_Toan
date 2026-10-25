@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bé Vui Học Toán - Trò Chơi Tương Tác & Phiếu In A4</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌟</text></svg>">
+</head>
+<body>
+
+  <!-- =========================================================================
+       HOẠT HÌNH NỀN SINH ĐỘNG (CARTOON SKY, RAINBOW, CLOUDS & GREEN HILLS)
+       ========================================================================= -->
+  <div class="cartoon-bg-wrapper" aria-hidden="true">
+    <!-- Cầu vồng 7 màu tuổi thơ -->
+    <div class="cartoon-rainbow"></div>
+
+    <!-- Mây trôi bồng bềnh -->
+    <div class="floating-cloud cloud-1">☁️</div>
+    <div class="floating-cloud cloud-2">⛅</div>
+    <div class="floating-cloud cloud-3">☁️</div>
+    <div class="floating-cloud cloud-4">☁️</div>
+
+    <!-- Bóng xà phòng lấp lánh bay lên -->
+    <div class="floating-bubble bubble-1"></div>
+    <div class="floating-bubble bubble-2"></div>
+    <div class="floating-bubble bubble-3"></div>
+    <div class="floating-bubble bubble-4"></div>
+    <div class="floating-bubble bubble-5"></div>
+
+    <!-- Đồi cỏ xanh mướt uốn lượn dưới chân trang -->
+    <div class="cartoon-hills-container">
+      <svg class="hills-svg" viewBox="0 0 1440 200" preserveAspectRatio="none">
+        <path d="M0,100 C320,40 540,150 860,70 C1140,20 1320,120 1440,60 L1440,200 L0,200 Z" fill="#86EFAC" opacity="0.65"/>
+        <path d="M0,120 C280,70 500,170 780,100 C1060,50 1260,140 1440,90 L1440,200 L0,200 Z" fill="#4ADE80" opacity="0.85"/>
+        <path d="M0,150 C240,110 460,190 740,130 C1000,80 1220,160 1440,120 L1440,200 L0,200 Z" fill="#22C55E"/>
+      </svg>
+      <div class="hills-decor-elements">
+        <span>🌸</span><span>🌼</span><span>🐞</span><span>🌷</span><span>🌻</span><span>🍄</span><span>🌼</span><span>🐰</span><span>🌸</span><span>🌺</span><span>🐝</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       APP HEADER
+       ========================================================================= -->
+  <header class="app-header">
+    <div class="header-container">
+      <a href="#" class="brand-logo" id="brandLogo">
+        <span style="font-size: 34px;">🎈</span>
+        <div>
+          <h1>BÉ VUI HỌC TOÁN</h1>
+          <span>Vừa chơi vừa học • Dễ thương & bổ ích</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Huy hiệu điểm sao thưởng -->
+        <div class="star-badge" title="Số sao bé đã tích lũy">
+          <span class="star-icon">⭐</span>
+          <span id="starCountText">0</span>
+        </div>
+
+        <!-- Nút bật tắt âm thanh -->
+        <button class="icon-btn" id="soundToggleBtn" title="Bật/Tắt âm thanh">🔊</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN CONTENT
+       ========================================================================= -->
+  <main class="main-content">
+
+    <!-- =======================================================================
+         TRANG CHỦ (HOME SCREEN) - 8 BÀI HỌC PHONG PHÚ
+         ======================================================================= -->
+    <section class="view-screen active" id="homeView">
+      <div class="hero-section">
+        <div class="hero-decor-sun" id="homeDecorSun"></div>
+        <div class="hero-decor-butterfly" id="homeDecorButterfly"></div>
+
+        <h2 class="hero-title">Chào Bé Yêu! Hôm Nay Học Gì Nào? 🌻</h2>
+        <div class="hero-subtitle">Bé hãy bấm vào một bài học bên dưới để bắt đầu nhé!</div>
+
+        <div class="chibi-duo">
+          <div id="chibiBoy" title="Bé chăm chỉ"></div>
+          <div id="chibiGirl" title="Bé thông minh"></div>
+        </div>
+
+        <!-- Danh sách 8 dạng bài học -->
+        <div class="game-cards-grid">
+          <!-- Bài 1: Đếm số lượng trong tranh (Hình 3) -->
+          <div class="game-select-card" data-target-view="nature">
+            <div class="game-card-icon">🌻</div>
+            <h3 class="game-card-title">1. Đếm Số Trong Tranh</h3>
+            <p class="game-card-desc">Đếm số lượng ong, bướm, hoa hướng dương rồi bấm chọn số đúng.</p>
+            <span class="game-card-badge">Mức độ: Dễ (1 - 8)</span>
+          </div>
+
+          <!-- Bài 2: Bé đếm và tô màu (Hình 4) -->
+          <div class="game-select-card" data-target-view="garden">
+            <div class="game-card-icon">🐞</div>
+            <h3 class="game-card-title">2. Bé Đếm & Tô Màu</h3>
+            <p class="game-card-desc">Đếm con vật trong khu vườn rồi tô tròn vào con số chính xác.</p>
+            <span class="game-card-badge">Mức độ: Vui nhộn (1 - 6)</span>
+          </div>
+
+          <!-- Bài 3: Tiệm bánh ngọt (Hình 2) -->
+          <div class="game-select-card" data-target-view="dessert">
+            <div class="game-card-icon">🍦</div>
+            <h3 class="game-card-title">3. Đếm Món Tiệm Bánh</h3>
+            <p class="game-card-desc">Đếm kem ốc quế, bánh donut, cupcake và chọn ô số dưới thẻ.</p>
+            <span class="game-card-badge">Mức độ: Vừa (1 - 10)</span>
+          </div>
+
+          <!-- Bài 4: Tìm số và khoanh tròn (Hình 5) -->
+          <div class="game-select-card" data-target-view="hunt">
+            <div class="game-card-icon">🔍</div>
+            <h3 class="game-card-title">4. Tìm Số Ẩn & Tập Tô Màu</h3>
+            <p class="game-card-desc">Truy tìm các con số bí mật trong vườn hoa và dùng bút màu tập vẽ số.</p>
+            <span class="game-card-badge">Bảng vẽ tương tác</span>
+          </div>
+
+          <!-- Bài 5: Phiếu so sánh >, <, = (Hình 1) -->
+          <div class="game-select-card" data-target-view="compare">
+            <div class="game-card-icon">⚖️</div>
+            <h3 class="game-card-title">5. Phiếu So Sánh: >, <, =</h3>
+            <p class="game-card-desc">Điền dấu Lớn hơn, Nhỏ hơn hoặc Bằng giữa hai con số từ 0 đến 10.</p>
+            <span class="game-card-badge">Chuẩn bị vào Lớp 1</span>
+          </div>
+
+          <!-- Bài 6: Phép cộng có hình ảnh (MỚI) -->
+          <div class="game-select-card" data-target-view="addition">
+            <div class="game-card-icon">🍎</div>
+            <h3 class="game-card-title">6. Phép Cộng Trực Quan</h3>
+            <p class="game-card-desc">Tập cộng hai nhóm quả táo, cà rốt, chú cá bằng hình ảnh ngộ nghĩnh.</p>
+            <span class="game-card-badge">Toán tư duy cho bé</span>
+          </div>
+
+          <!-- Bài 7: Đoàn tàu điền số (MỚI) -->
+          <div class="game-select-card" data-target-view="train">
+            <div class="game-card-icon">🚂</div>
+            <h3 class="game-card-title">7. Đoàn Tàu Tìm Số Còn Thiếu</h3>
+            <p class="game-card-desc">Đoán xem toa tàu nào bị thiếu số theo thứ tự đếm từ 1 đến 10.</p>
+            <span class="game-card-badge">Quy luật dãy số</span>
+          </div>
+
+          <!-- Bài 8: Bé đếm hình khối (MỚI) -->
+          <div class="game-select-card" data-target-view="shapes">
+            <div class="game-card-icon">🔺</div>
+            <h3 class="game-card-title">8. Bé Đếm Hình Khối</h3>
+            <p class="game-card-desc">Nhận biết và đếm số lượng hình tròn, vuông, tam giác, ngôi sao, trái tim.</p>
+            <span class="game-card-badge">Nhận diện hình học</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 1: ĐẾM SỐ LƯỢNG TRONG TRANH (Hình 3)
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="natureView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="nature">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp 1: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">ĐẾM SỐ LƯỢNG TRONG TRANH</div>
+          <br>
+          <div class="sheet-sub-title">Bé hãy đếm và khoanh tròn đáp án đúng nhé! 🌸</div>
+        </div>
+
+        <div class="nature-cards-grid" id="natureCardsContainer">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 28px;">🐰</span>
+            <div class="cheer-pill">Con giỏi lắm! ❤️</div>
+          </div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Bé Vui Học Toán</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 2: BÉ ĐẾM VÀ TÔ MÀU - KHU VƯỜN DỄ THƯƠNG (Hình 4)
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="gardenView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="garden">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">BÉ ĐẾM VÀ TÔ MÀU</div>
+          <br>
+          <div class="sheet-sub-title">KHU VƯỜN DỄ THƯƠNG • Đếm con vật rồi tô vào số đúng nhé!</div>
+        </div>
+
+        <div class="sample-guide-box">
+          <span>Ví dụ:</span>
+          <span>🐞 🐞 🐞</span>
+          <span>= Tô vào số</span>
+          <span class="sample-btn">3</span>
+        </div>
+
+        <div class="garden-rows-container" id="gardenRowsContainer">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 28px;">🌿</span>
+            <div class="cheer-pill">Bé Chăm Chỉ Quá! 🌟</div>
+          </div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Học Toán Thật Vui</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 3: ĐẾM VÀ CHỌN SỐ - TIỆM BÁNH NGỌT (Hình 2)
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="dessertView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="dessert">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">TIỆM BÁNH NGỌT DỄ THƯƠNG</div>
+          <br>
+          <div class="sheet-sub-title">Bé hãy đếm các món tráng miệng rồi chọn con số chính xác! 🍧</div>
+        </div>
+
+        <div class="dessert-cards-grid" id="dessertCardsContainer">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div class="cheer-pill">Bé Hoàn Thành Rất Giỏi! 🧁</div>
+          <div class="footer-brand-tag">🌟 Tiệm Bánh Nhỏ Của Bé</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 4: BÉ TÌM SỐ VÀ KHOANH TRÒN TRONG KHU VƯỜN (Hình 5)
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="huntView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <label style="font-weight: 700; color: #1E3A8A;">Chọn số cần tìm: </label>
+          <select id="huntTargetSelect" style="padding: 6px 12px; border-radius: 999px; border: 2px solid #3B82F6; font-weight: 800; font-family: inherit;">
+            <option value="1" selected>Số 1</option>
+            <option value="2">Số 2</option>
+            <option value="3">Số 3</option>
+            <option value="4">Số 4</option>
+            <option value="5">Số 5</option>
+            <option value="6">Số 6</option>
+            <option value="7">Số 7</option>
+            <option value="8">Số 8</option>
+            <option value="9">Số 9</option>
+            <option value="10">Số 10</option>
+          </select>
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="hunt">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">BÉ TÌM SỐ VÀ KHOANH TRÒN</div>
+          <br>
+          <div class="sheet-sub-title">KHU VƯỜN DỄ THƯƠNG • Mắt bé tinh anh tìm số nhé! 🔍</div>
+        </div>
+
+        <div class="hunt-target-banner">
+          <div class="hunt-target-text" id="huntTargetText">Bé hãy tìm và bấm vào tất cả số 1 nhé! 🌸</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-weight: 800; color: #78350F;">Số cần tìm:</span>
+            <div class="hunt-target-badge" id="huntTargetBadge">1</div>
+          </div>
+        </div>
+
+        <div class="hunt-garden-board" id="huntGardenBoard">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="coloring-pad-section">
+          <div>
+            <h4 style="font-size: 20px; font-weight: 800; color: #1E3A8A; margin-bottom: 6px;">🎨 Bé Tập Tô Màu Chữ Số</h4>
+            <p style="font-size: 14px; color: #64748B; font-weight: 600;">Dùng chuột hoặc ngón tay chạm vẽ để tô chữ số rỗng bên cạnh</p>
+            <div class="coloring-controls" style="margin-top: 12px;">
+              <div class="color-palette">
+                <div class="color-dot active" data-color="#F43F5E" style="background: #F43F5E;"></div>
+                <div class="color-dot" data-color="#FBBF24" style="background: #FBBF24;"></div>
+                <div class="color-dot" data-color="#3B82F6" style="background: #3B82F6;"></div>
+                <div class="color-dot" data-color="#10B981" style="background: #10B981;"></div>
+                <div class="color-dot" data-color="#A855F7" style="background: #A855F7;"></div>
+                <div class="color-dot" data-color="#FFFFFF" style="background: #FFFFFF; border: 2px dashed #94A3B8;" title="Tẩy trắng"></div>
+              </div>
+              <button class="btn-pill btn-yellow" id="clearCanvasBtn" style="width: fit-content; padding: 6px 14px; font-size: 14px;">🗑️ Xóa Vẽ Lại</button>
+            </div>
+          </div>
+
+          <div class="coloring-canvas-wrapper">
+            <canvas id="coloringCanvas" width="220" height="200"></canvas>
+          </div>
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div class="cheer-pill">Con Quan Sát Rất Tốt! 🐝</div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Khu Vườn Kỳ Thú</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 5: PHIẾU SO SÁNH >, <, = (Hình 1)
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="compareView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-green" id="checkCompareBtn">✅ Chấm Điểm</button>
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="compare">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">..................................................................</span></div>
+          <div>Lớp 1: <span class="dotted-line">.............</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">PHIẾU SO SÁNH</div>
+          <br>
+          <div class="sheet-sub-title">Điền dấu &gt; , &lt; , = vào chỗ trống (Bấm vào ô để chọn dấu)</div>
+        </div>
+
+        <div class="comparison-table-grid" id="compareTableGrid">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 26px;">✏️</span>
+            <div class="cheer-pill">Tự Tin Vào Lớp 1! ⭐</div>
+          </div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Phiếu So Sánh</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 6 MỚI: PHÉP CỘNG CÓ HÌNH ẢNH TRỰC QUAN
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="additionView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="addition">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">PHÉP CỘNG HÌNH ẢNH TRỰC QUAN</div>
+          <br>
+          <div class="sheet-sub-title">Bé hãy cộng hai nhóm đồ vật rồi khoanh tròn vào đáp án đúng nhé! 🍎</div>
+        </div>
+
+        <div class="addition-cards-grid" id="additionCardsContainer">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 28px;">🌟</span>
+            <div class="cheer-pill">Bé Tính Toán Siêu Quá! ❤️</div>
+          </div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Phép Cộng Vui Nhộn</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 7 MỚI: ĐOÀN TÀU ĐIỀN SỐ CÒN THIẾU
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="trainView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="train">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">ĐOÀN TÀU TÌM SỐ CÒN THIẾU</div>
+          <br>
+          <div class="sheet-sub-title">Bé hãy quan sát quy luật và điền số vào toa tàu có dấu hỏi chấm! 🚂</div>
+        </div>
+
+        <div class="train-cards-container" id="trainCardsContainer">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 28px;">🚂</span>
+            <div class="cheer-pill">Tàu Chạy Đúng Giờ Rồi! ⭐</div>
+          </div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Đoàn Tàu Số Học</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         DẠNG 8 MỚI: BÉ ĐẾM HÌNH KHỐI MÀU SẮC
+         ======================================================================= -->
+    <section class="view-screen worksheet-view" id="shapesView">
+      <div class="worksheet-toolbar">
+        <button class="btn-pill btn-back-home">⬅️ Quay Lại</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-pill btn-yellow btn-refresh-sheet" data-sheet-type="shapes">🎲 Đổi Đề Mới</button>
+          <button class="btn-pill btn-green btn-print-sheet">🖨️ In Phiếu A4</button>
+        </div>
+      </div>
+
+      <div class="worksheet-paper">
+        <div class="sheet-header-meta">
+          <div>Họ và tên: <span class="dotted-line">...................................................</span></div>
+          <div>Lớp: <span class="dotted-line">...........</span></div>
+        </div>
+
+        <div class="sheet-title-banner">
+          <div class="sheet-main-title">BÉ ĐẾM HÌNH KHỐI MÀU SẮC</div>
+          <br>
+          <div class="sheet-sub-title">Nhận biết hình tròn, vuông, tam giác, ngôi sao, trái tim! 🔺</div>
+        </div>
+
+        <div class="shapes-cards-grid" id="shapesCardsContainer">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <div class="sheet-footer-banner">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 28px;">🔷</span>
+            <div class="cheer-pill">Bé Nhận Biết Hình Rất Tốt! ❤️</div>
+          </div>
+          <div class="footer-brand-tag">🌟 CoHaEdu • Hình Học Vui Nhộn</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODAL CHIẾN THẮNG KHI LÀM XONG
+       ========================================================================= -->
+  <div class="victory-modal-overlay" id="victoryModal">
+    <div class="victory-modal-content">
+      <div class="victory-modal-icon" style="font-size: 64px;">🏆</div>
+      <h3 class="victory-modal-title" id="victoryModalTitle">Con Giỏi Lắm!</h3>
+      <p class="victory-modal-desc" id="victoryModalDesc">Bé đã hoàn thành xuất sắc bài tập này và nhận được thật nhiều ngôi sao thưởng!</p>
+      <button class="btn-pill btn-green" id="closeVictoryModalBtn" style="margin: 0 auto; font-size: 18px; padding: 10px 28px;">
+        Tuyệt Vời! Tiếp Tục Chơi 🎈
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sound.js"></script>
+  <script src="js/illustrations.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/generators.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
