@@ -370,6 +370,71 @@ const MathGenerators = {
         userAnswer: null
       };
     });
+  },
+
+  // =========================================================================
+  // 9. DẠNG BÀI MỚI: BÉ NỐI KẾT QUẢ ĐÚNG (Matching Line Pairs)
+  // =========================================================================
+  generateMatchingGame(theme = 'nature', pairCount = 5) {
+    let pool = [];
+    if (theme === 'dessert') {
+      pool = [
+        { type: 'icecream', name: 'Kem ốc quế' },
+        { type: 'donut', name: 'Bánh donut' },
+        { type: 'cupcake', name: 'Bánh cupcake' },
+        { type: 'lollipop', name: 'Kẹo mút que' },
+        { type: 'cookie', name: 'Bánh quy bơ' },
+        { type: 'birthdayCake', name: 'Bánh sinh nhật' },
+        { type: 'milkCarton', name: 'Hộp sữa tươi' }
+      ];
+    } else if (theme === 'garden') {
+      pool = [
+        { type: 'ladybug', name: 'Bọ rùa đỏ' },
+        { type: 'bee', name: 'Chú ong vàng' },
+        { type: 'butterfly', name: 'Bướm xinh' },
+        { type: 'frog', name: 'Chú ếch xanh' },
+        { type: 'sunflower', name: 'Hoa hướng dương' },
+        { type: 'mushroom', name: 'Cây nấm đỏ' },
+        { type: 'strawberry', name: 'Quả dâu tây' }
+      ];
+    } else {
+      // nature: động vật, hoa quả, đồ vật
+      pool = [
+        { type: 'duck', name: 'Chú vịt con' },
+        { type: 'frog', name: 'Chú ếch xanh' },
+        { type: 'puppy', name: 'Chú cún con' },
+        { type: 'kitten', name: 'Mèo con đáng yêu' },
+        { type: 'watermelon', name: 'Miếng dưa hấu' },
+        { type: 'banana', name: 'Quả chuối vàng' },
+        { type: 'mango', name: 'Quả xoài chín' },
+        { type: 'car', name: 'Chiếc ô tô' },
+        { type: 'airplane', name: 'Máy bay nhỏ' },
+        { type: 'balloon', name: 'Khinh khí cầu' }
+      ];
+    }
+
+    const selectedItems = this.shuffle(pool).slice(0, pairCount);
+    const possibleCounts = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8]).slice(0, pairCount);
+    const lineColors = ['#0284C7', '#059669', '#DB2777', '#D97706', '#7C3AED', '#EA580C'];
+
+    const leftCards = selectedItems.map((item, idx) => ({
+      id: `m_left_${idx}`,
+      type: item.type,
+      name: item.name,
+      count: possibleCounts[idx],
+      color: lineColors[idx % lineColors.length]
+    }));
+
+    const rightCards = this.shuffle(possibleCounts).map((num, idx) => ({
+      id: `m_right_${idx}`,
+      val: num
+    }));
+
+    return {
+      theme: theme,
+      leftCards: leftCards,
+      rightCards: rightCards
+    };
   }
 };
 

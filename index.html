@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bé Vui Học Toán - Trò Chơi Tương Tác & Phiếu In A4</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌟</text></svg>">
 </head>
 <body>
@@ -84,6 +84,18 @@
         <h2 class="hero-title">Chào Bé Yêu! Hôm Nay Học Gì Nào? 🌻</h2>
         <div class="hero-subtitle">Bé hãy bấm vào một bài học bên dưới để bắt đầu nhé!</div>
 
+        <!-- Banner tính năng mới: Nối kết quả đúng -->
+        <div class="home-feature-banner" id="bannerMatchDemo">
+          <div class="feature-banner-left">
+            <span class="feature-icon">✨</span>
+            <div>
+              <div class="feature-title">TÍNH NĂNG MỚI: BÉ NỐI KẾT QUẢ ĐÚNG! ✏️</div>
+              <div class="feature-desc">Nối đường kẻ từ hình ảnh con vật, hoa quả sang con số tương ứng cực kỳ vui nhộn.</div>
+            </div>
+          </div>
+          <button class="btn-pill btn-feature-try" id="btnTryMatchingDemo">Chơi Thử Ngay 🚀</button>
+        </div>
+
         <div class="chibi-duo">
           <div id="chibiBoy" title="Bé chăm chỉ"></div>
           <div id="chibiGirl" title="Bé thông minh"></div>
@@ -95,24 +107,36 @@
           <div class="game-select-card" data-target-view="nature">
             <div class="game-card-icon">🌻</div>
             <h3 class="game-card-title">1. Đếm Số Trong Tranh</h3>
-            <p class="game-card-desc">Đếm số lượng ong, bướm, hoa hướng dương rồi bấm chọn số đúng.</p>
-            <span class="game-card-badge">Mức độ: Dễ (1 - 8)</span>
+            <p class="game-card-desc">Đếm số lượng ong, bướm, hoa hướng dương rồi nối hoặc bấm chọn số.</p>
+            <div class="card-mode-pills">
+              <button class="pill-mode-btn btn-match-tag" onclick="event.stopPropagation(); window.app && window.app.openSheetMode('nature', 'match')">✏️ Nối Kết Quả (Mới 🌟)</button>
+              <button class="pill-mode-btn btn-select-tag" onclick="event.stopPropagation(); window.app && window.app.openSheetMode('nature', 'select')">🔘 Chọn Số</button>
+            </div>
+            <span class="game-card-badge" style="margin-top: 8px;">Mức độ: Dễ (1 - 8)</span>
           </div>
 
           <!-- Bài 2: Bé đếm và tô màu (Hình 4) -->
           <div class="game-select-card" data-target-view="garden">
             <div class="game-card-icon">🐞</div>
             <h3 class="game-card-title">2. Bé Đếm & Tô Màu</h3>
-            <p class="game-card-desc">Đếm con vật trong khu vườn rồi tô tròn vào con số chính xác.</p>
-            <span class="game-card-badge">Mức độ: Vui nhộn (1 - 6)</span>
+            <p class="game-card-desc">Đếm con vật trong khu vườn rồi nối hoặc tô tròn vào con số.</p>
+            <div class="card-mode-pills">
+              <button class="pill-mode-btn btn-match-tag" onclick="event.stopPropagation(); window.app && window.app.openSheetMode('garden', 'match')">✏️ Nối Kết Quả (Mới 🌟)</button>
+              <button class="pill-mode-btn btn-select-tag" onclick="event.stopPropagation(); window.app && window.app.openSheetMode('garden', 'select')">🔘 Chọn Số</button>
+            </div>
+            <span class="game-card-badge" style="margin-top: 8px;">Mức độ: Vui nhộn (1 - 6)</span>
           </div>
 
           <!-- Bài 3: Tiệm bánh ngọt (Hình 2) -->
           <div class="game-select-card" data-target-view="dessert">
             <div class="game-card-icon">🍦</div>
             <h3 class="game-card-title">3. Đếm Món Tiệm Bánh</h3>
-            <p class="game-card-desc">Đếm kem ốc quế, bánh donut, cupcake và chọn ô số dưới thẻ.</p>
-            <span class="game-card-badge">Mức độ: Vừa (1 - 10)</span>
+            <p class="game-card-desc">Đếm kem ốc quế, bánh donut, cupcake rồi nối hoặc chọn ô số.</p>
+            <div class="card-mode-pills">
+              <button class="pill-mode-btn btn-match-tag" onclick="event.stopPropagation(); window.app && window.app.openSheetMode('dessert', 'match')">✏️ Nối Kết Quả (Mới 🌟)</button>
+              <button class="pill-mode-btn btn-select-tag" onclick="event.stopPropagation(); window.app && window.app.openSheetMode('dessert', 'select')">🔘 Chọn Số</button>
+            </div>
+            <span class="game-card-badge" style="margin-top: 8px;">Mức độ: Vừa (1 - 10)</span>
           </div>
 
           <!-- Bài 4: Tìm số và khoanh tròn (Hình 5) -->
@@ -179,10 +203,23 @@
         <div class="sheet-title-banner">
           <div class="sheet-main-title">ĐẾM SỐ LƯỢNG TRONG TRANH</div>
           <br>
-          <div class="sheet-sub-title">Bé hãy đếm và khoanh tròn đáp án đúng nhé! 🌸</div>
+          <div class="sheet-sub-title">Bé hãy đếm và chọn đáp án hoặc nối kết quả đúng nhé! 🌸</div>
         </div>
 
-        <div class="nature-cards-grid" id="natureCardsContainer">
+        <!-- Chế độ làm bài: Chọn số hoặc Nối kết quả -->
+        <div class="worksheet-mode-bar">
+          <span class="mode-bar-label">🎯 Hình thức:</span>
+          <button class="mode-tab-btn" data-sheet="nature" data-mode="select" onclick="window.app && window.app.setWorksheetMode('nature', 'select')">🔘 Bấm Chọn Số</button>
+          <button class="mode-tab-btn active" data-sheet="nature" data-mode="match" onclick="window.app && window.app.setWorksheetMode('nature', 'match')">✏️ Nối Kết Quả Đúng (Mới 🌟)</button>
+        </div>
+
+        <!-- Chế độ 1: Chọn số trắc nghiệm -->
+        <div class="nature-cards-grid" id="natureCardsContainer" style="display: none;">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <!-- Chế độ 2: Nối kết quả đúng -->
+        <div class="matching-board-wrapper" id="natureMatchContainer">
           <!-- Render tự động bởi JS -->
         </div>
 
@@ -217,17 +254,30 @@
         <div class="sheet-title-banner">
           <div class="sheet-main-title">BÉ ĐẾM VÀ TÔ MÀU</div>
           <br>
-          <div class="sheet-sub-title">KHU VƯỜN DỄ THƯƠNG • Đếm con vật rồi tô vào số đúng nhé!</div>
+          <div class="sheet-sub-title">KHU VƯỜN DỄ THƯƠNG • Đếm con vật rồi tô hoặc nối số đúng nhé!</div>
         </div>
 
-        <div class="sample-guide-box">
+        <!-- Chế độ làm bài: Chọn số hoặc Nối kết quả -->
+        <div class="worksheet-mode-bar">
+          <span class="mode-bar-label">🎯 Hình thức:</span>
+          <button class="mode-tab-btn" data-sheet="garden" data-mode="select" onclick="window.app && window.app.setWorksheetMode('garden', 'select')">🔘 Bấm Chọn Số</button>
+          <button class="mode-tab-btn active" data-sheet="garden" data-mode="match" onclick="window.app && window.app.setWorksheetMode('garden', 'match')">✏️ Nối Kết Quả Đúng (Mới 🌟)</button>
+        </div>
+
+        <div class="sample-guide-box" id="gardenSampleBox" style="display: none;">
           <span>Ví dụ:</span>
           <span>🐞 🐞 🐞</span>
           <span>= Tô vào số</span>
           <span class="sample-btn">3</span>
         </div>
 
-        <div class="garden-rows-container" id="gardenRowsContainer">
+        <!-- Chế độ 1: Chọn số trắc nghiệm -->
+        <div class="garden-rows-container" id="gardenRowsContainer" style="display: none;">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <!-- Chế độ 2: Nối kết quả đúng -->
+        <div class="matching-board-wrapper" id="gardenMatchContainer">
           <!-- Render tự động bởi JS -->
         </div>
 
@@ -262,10 +312,23 @@
         <div class="sheet-title-banner">
           <div class="sheet-main-title">TIỆM BÁNH NGỌT DỄ THƯƠNG</div>
           <br>
-          <div class="sheet-sub-title">Bé hãy đếm các món tráng miệng rồi chọn con số chính xác! 🍧</div>
+          <div class="sheet-sub-title">Bé hãy đếm các món tráng miệng rồi chọn hoặc nối con số chính xác! 🍧</div>
         </div>
 
-        <div class="dessert-cards-grid" id="dessertCardsContainer">
+        <!-- Chế độ làm bài: Chọn số hoặc Nối kết quả -->
+        <div class="worksheet-mode-bar">
+          <span class="mode-bar-label">🎯 Hình thức:</span>
+          <button class="mode-tab-btn" data-sheet="dessert" data-mode="select" onclick="window.app && window.app.setWorksheetMode('dessert', 'select')">🔘 Bấm Chọn Số</button>
+          <button class="mode-tab-btn active" data-sheet="dessert" data-mode="match" onclick="window.app && window.app.setWorksheetMode('dessert', 'match')">✏️ Nối Kết Quả Đúng (Mới 🌟)</button>
+        </div>
+
+        <!-- Chế độ 1: Chọn số trắc nghiệm -->
+        <div class="dessert-cards-grid" id="dessertCardsContainer" style="display: none;">
+          <!-- Render tự động bởi JS -->
+        </div>
+
+        <!-- Chế độ 2: Nối kết quả đúng -->
+        <div class="matching-board-wrapper" id="dessertMatchContainer">
           <!-- Render tự động bởi JS -->
         </div>
 
@@ -524,10 +587,10 @@
   </div>
 
   <!-- Scripts -->
-  <script src="js/sound.js"></script>
-  <script src="js/illustrations.js"></script>
-  <script src="js/confetti.js"></script>
-  <script src="js/generators.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/sound.js?v=3.0"></script>
+  <script src="js/illustrations.js?v=3.0"></script>
+  <script src="js/confetti.js?v=3.0"></script>
+  <script src="js/generators.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
 </body>
 </html>

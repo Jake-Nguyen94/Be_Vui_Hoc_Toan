@@ -47,6 +47,11 @@ class MathApp {
     this.isDrawing = false;
     this.canvasCtx = null;
 
+    // Chủ đề 1, 2, 3 mặc định kích hoạt chế độ NỐI KẾT QUẢ ĐÚNG
+    this.matchingModes = { nature: 'match', garden: 'match', dessert: 'match' };
+    this.matchingData = { nature: null, garden: null, dessert: null };
+    this.selectedMatchPin = null;
+
     this.currentData = {
       nature: [],
       garden: [],
@@ -59,6 +64,7 @@ class MathApp {
       shapes: []
     };
 
+    window.app = this;
     this.init();
   }
 
@@ -108,7 +114,11 @@ class MathApp {
       btn.addEventListener('click', () => {
         const type = btn.dataset.sheetType;
         window.soundMgr.playPop();
-        this.loadWorksheet(type, true);
+        if (this.matchingModes[type] === 'match') {
+          this.renderMatchingGame(type, true);
+        } else {
+          this.loadWorksheet(type, true);
+        }
         window.soundMgr.speakRefresh();
       });
     });
@@ -123,6 +133,33 @@ class MathApp {
       btn.addEventListener('click', () => {
         this.switchView('home');
       });
+    });
+
+    // Chơi thử tính năng Nối kết quả từ trang chủ
+    const btnDemo = document.getElementById('btnTryMatchingDemo');
+    if (btnDemo) {
+      btnDemo.addEventListener('click', () => {
+        this.switchView('nature');
+        this.setWorksheetMode('nature', 'match');
+      });
+    }
+
+    // Chuyển đổi giữa chế độ Chọn số & Nối kết quả
+    document.querySelectorAll('.mode-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sheet = btn.dataset.sheet;
+        const mode = btn.dataset.mode;
+        this.setWorksheetMode(sheet, mode);
+      });
+    });
+
+    // Vẽ lại đường nối SVG khi xoay ngang/thay đổi kích thước màn hình
+    window.addEventListener('resize', () => {
+      if (['nature', 'garden', 'dessert'].includes(this.currentView)) {
+        if (this.matchingModes[this.currentView] === 'match') {
+          this.redrawMatchingLines(this.currentView);
+        }
+      }
     });
   }
 
@@ -143,11 +180,61 @@ class MathApp {
     }
   }
 
+  openSheetMode(sheet, mode = 'match') {
+    this.matchingModes[sheet] = mode;
+    this.switchView(sheet);
+    this.setWorksheetMode(sheet, mode);
+  }
+
+  setWorksheetMode(sheet, mode, forceRefresh = false) {
+    this.matchingModes[sheet] = mode;
+
+    // Cập nhật tab active
+    document.querySelectorAll(`.mode-tab-btn[data-sheet="${sheet}"]`).forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    const isMatch = (mode === 'match');
+
+    if (sheet === 'nature') {
+      const selectBox = document.getElementById('natureCardsContainer');
+      const matchBox = document.getElementById('natureMatchContainer');
+      if (selectBox) selectBox.style.display = isMatch ? 'none' : 'grid';
+      if (matchBox) matchBox.style.display = isMatch ? 'block' : 'none';
+    } else if (sheet === 'garden') {
+      const selectBox = document.getElementById('gardenRowsContainer');
+      const sampleBox = document.getElementById('gardenSampleBox');
+      const matchBox = document.getElementById('gardenMatchContainer');
+      if (selectBox) selectBox.style.display = isMatch ? 'none' : 'flex';
+      if (sampleBox) sampleBox.style.display = isMatch ? 'none' : 'flex';
+      if (matchBox) matchBox.style.display = isMatch ? 'block' : 'none';
+    } else if (sheet === 'dessert') {
+      const selectBox = document.getElementById('dessertCardsContainer');
+      const matchBox = document.getElementById('dessertMatchContainer');
+      if (selectBox) selectBox.style.display = isMatch ? 'none' : 'grid';
+      if (matchBox) matchBox.style.display = isMatch ? 'block' : 'none';
+    }
+
+    if (window.soundMgr) window.soundMgr.playPop();
+
+    if (isMatch) {
+      this.renderMatchingGame(sheet, forceRefresh || !this.matchingData[sheet]);
+    } else {
+      if (forceRefresh || !this.currentData[sheet] || this.currentData[sheet].length === 0) {
+        if (sheet === 'nature') this.renderNatureGame(true);
+        else if (sheet === 'garden') this.renderGardenGame(true);
+        else if (sheet === 'dessert') this.renderDessertGame(true);
+      }
+    }
+  }
+
   loadWorksheet(type, forceRefresh = false) {
-    if (type === 'nature') this.renderNatureGame(forceRefresh);
-    else if (type === 'garden') this.renderGardenGame(forceRefresh);
-    else if (type === 'dessert') this.renderDessertGame(forceRefresh);
-    else if (type === 'hunt') this.renderHuntGame(forceRefresh);
+    if (['nature', 'garden', 'dessert'].includes(type)) {
+      const mode = this.matchingModes[type] || 'match';
+      this.setWorksheetMode(type, mode, forceRefresh);
+      return;
+    }
+    if (type === 'hunt') this.renderHuntGame(forceRefresh);
     else if (type === 'compare') this.renderCompareGame(forceRefresh);
     else if (type === 'addition') this.renderAdditionGame(forceRefresh);
     else if (type === 'train') this.renderTrainGame(forceRefresh);
@@ -800,11 +887,306 @@ class MathApp {
     window.soundMgr.speakVictory();
   }
 
+  // =========================================================================
+  // CHẾ ĐỘ NỐI KẾT QUẢ ĐÚNG (MATCHING BOARD) CHO CHỦ ĐỀ 1, 2, 3
+  // =========================================================================
+  renderMatchingGame(theme, force = false) {
+    if (force || !this.matchingData[theme]) {
+      this.matchingData[theme] = window.MathGenerators.generateMatchingGame(theme, 5);
+      this.matchingData[theme].matchedPairs = [];
+    }
+
+    const container = document.getElementById(`${theme}MatchContainer`);
+    if (!container) return;
+    container.style.display = 'block';
+
+    this.selectedMatchPin = null;
+    const game = this.matchingData[theme];
+    const totalPairs = game.leftCards.length;
+    const currentMatched = game.matchedPairs.length;
+
+    // Render thẻ bên trái (chứa hình ảnh và số lượng)
+    const leftHtml = game.leftCards.map(c => {
+      let svgs = '';
+      for (let i = 0; i < c.count; i++) {
+        svgs += `<span class="match-item-icon" title="${c.name}">${getCuteItemSVG(c.type, 38)}</span>`;
+      }
+      const isMatched = game.matchedPairs.some(p => p.leftId === c.id);
+      return `
+        <div class="match-card-left ${isMatched ? 'matched' : ''}" id="${c.id}_card" data-id="${c.id}" data-side="left" data-count="${c.count}" data-color="${c.color}">
+          <div class="match-card-left-content">
+            <span class="match-card-title-hint">${c.name}:</span>
+            ${svgs}
+          </div>
+          <div class="matching-pin pin-right ${isMatched ? 'matched' : ''}" id="${c.id}_pin" data-id="${c.id}" data-side="left" title="Chấm nối"></div>
+        </div>
+      `;
+    }).join('');
+
+    // Render thẻ bên phải (chứa con số kết quả)
+    const rightHtml = game.rightCards.map(c => {
+      const isMatched = game.matchedPairs.some(p => p.rightId === c.id);
+      return `
+        <div class="match-card-right ${isMatched ? 'matched' : ''}" id="${c.id}_card" data-id="${c.id}" data-side="right" data-val="${c.val}">
+          <div class="matching-pin pin-left ${isMatched ? 'matched' : ''}" id="${c.id}_pin" data-id="${c.id}" data-side="right" title="Chấm nối"></div>
+          <div class="match-number-badge">${c.val}</div>
+          <div class="match-card-title-hint" style="font-size:16px; width:auto;">Số ${c.val}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="matching-guide-banner">
+        <span>👉 <b>Hướng dẫn cho bé:</b> Bé hãy chạm vào ô bên trái, rồi chạm vào ô số đúng bên phải để nối nhé! 🌟</span>
+        <span class="matching-star-count" id="${theme}_match_counter">⭐ Đã nối: ${currentMatched}/${totalPairs}</span>
+      </div>
+      <div class="matching-board-grid" id="${theme}_matching_board">
+        <svg class="matching-svg-overlay" id="${theme}_match_svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="${theme}_shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.25" />
+            </filter>
+          </defs>
+          <g class="matched-lines-layer" id="${theme}_matched_lines"></g>
+          <path class="preview-drag-line" id="${theme}_temp_line" d="" style="display:none;"></path>
+        </svg>
+
+        <div class="matching-col-left">
+          ${leftHtml}
+        </div>
+        <div class="matching-col-right">
+          ${rightHtml}
+        </div>
+      </div>
+    `;
+
+    // Vẽ lại đường nối nếu đã có cặp nối từ trước
+    requestAnimationFrame(() => {
+      this.redrawMatchingLines(theme);
+    });
+
+    // Bắt sự kiện chạm / click vào các thẻ
+    const board = document.getElementById(`${theme}_matching_board`);
+    if (!board) return;
+
+    const allCards = board.querySelectorAll('.match-card-left, .match-card-right');
+    allCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const side = card.dataset.side;
+        const id = card.dataset.id;
+        this.handleMatchItemClick(theme, side, id);
+      });
+    });
+  }
+
+  handleMatchItemClick(theme, side, id) {
+    const game = this.matchingData[theme];
+    if (!game) return;
+
+    // Bỏ qua nếu thẻ này đã được nối chính xác
+    if (side === 'left' && game.matchedPairs.some(p => p.leftId === id)) return;
+    if (side === 'right' && game.matchedPairs.some(p => p.rightId === id)) return;
+
+    const cardEl = document.getElementById(`${id}_card`);
+    const pinEl = document.getElementById(`${id}_pin`);
+    if (!cardEl || !pinEl) return;
+
+    // Chưa có thẻ nào được chọn trước đó
+    if (!this.selectedMatchPin) {
+      this.selectedMatchPin = { theme, side, id, cardEl, pinEl };
+      cardEl.classList.add('active-selection');
+      pinEl.classList.add('pin-active');
+      window.soundMgr.playPop();
+
+      // Đọc số hoặc đếm số lượng bằng giọng Tiếng Việt
+      if (side === 'left') {
+        const leftItem = game.leftCards.find(c => c.id === id);
+        if (leftItem) window.soundMgr.speakNumber(leftItem.count);
+      } else {
+        const rightItem = game.rightCards.find(c => c.id === id);
+        if (rightItem) window.soundMgr.speakNumber(rightItem.val);
+      }
+      return;
+    }
+
+    // Bé bấm vào cùng một bên (đổi lựa chọn)
+    if (this.selectedMatchPin.side === side) {
+      this.selectedMatchPin.cardEl.classList.remove('active-selection');
+      this.selectedMatchPin.pinEl.classList.remove('pin-active');
+
+      if (this.selectedMatchPin.id === id) {
+        // Hủy chọn nếu bấm lại chính nó
+        this.selectedMatchPin = null;
+        window.soundMgr.playPop();
+        return;
+      }
+
+      this.selectedMatchPin = { theme, side, id, cardEl, pinEl };
+      cardEl.classList.add('active-selection');
+      pinEl.classList.add('pin-active');
+      window.soundMgr.playPop();
+      if (side === 'left') {
+        const leftItem = game.leftCards.find(c => c.id === id);
+        if (leftItem) window.soundMgr.speakNumber(leftItem.count);
+      } else {
+        const rightItem = game.rightCards.find(c => c.id === id);
+        if (rightItem) window.soundMgr.speakNumber(rightItem.val);
+      }
+      return;
+    }
+
+    // Bé bấm vào 2 bên khác nhau -> Kiểm tra nối đáp án!
+    const leftId = side === 'left' ? id : this.selectedMatchPin.id;
+    const rightId = side === 'right' ? id : this.selectedMatchPin.id;
+    const leftItem = game.leftCards.find(c => c.id === leftId);
+    const rightItem = game.rightCards.find(c => c.id === rightId);
+    const leftCard = document.getElementById(`${leftId}_card`);
+    const rightCard = document.getElementById(`${rightId}_card`);
+    const leftPin = document.getElementById(`${leftId}_pin`);
+    const rightPin = document.getElementById(`${rightId}_pin`);
+
+    // Xóa hiệu ứng đang chọn
+    this.selectedMatchPin.cardEl.classList.remove('active-selection');
+    this.selectedMatchPin.pinEl.classList.remove('pin-active');
+    this.selectedMatchPin = null;
+
+    if (leftItem.count === rightItem.val) {
+      // NỐI ĐÚNG!
+      game.matchedPairs.push({
+        leftId: leftId,
+        rightId: rightId,
+        color: leftItem.color || '#3B82F6',
+        count: leftItem.count
+      });
+
+      leftCard.classList.add('matched');
+      rightCard.classList.add('matched');
+      leftPin.classList.add('matched');
+      rightPin.classList.add('matched');
+
+      // Vẽ đường dây ribbon màu sắc nối 2 điểm
+      this.drawConnectedLine(theme, leftId, rightId, leftItem.color || '#3B82F6');
+
+      // Cập nhật số sao và tiến độ
+      const counterEl = document.getElementById(`${theme}_match_counter`);
+      if (counterEl) {
+        counterEl.textContent = `⭐ Đã nối: ${game.matchedPairs.length}/${game.leftCards.length}`;
+      }
+
+      window.soundMgr.playCorrect();
+      window.soundMgr.speakRandomPraise();
+      this.addStars(1);
+
+      // Kiểm tra hoàn thành tất cả các cặp nối
+      if (game.matchedPairs.length === game.leftCards.length) {
+        setTimeout(() => {
+          this.showVictoryModal(
+            "Bé Nối Chuẩn Xác Quá! 🎉",
+            "Bé thật thông minh, đã nối đúng tất cả các tranh với chữ số tương ứng!"
+          );
+          this.addStars(5);
+        }, 500);
+      }
+    } else {
+      // NỐI SAI!
+      leftCard.classList.add('card-shake-wrong');
+      rightCard.classList.add('card-shake-wrong');
+
+      // Vẽ đường gạch tạm màu đỏ báo sai
+      this.drawTemporaryErrorLine(theme, leftPin, rightPin);
+
+      window.soundMgr.playWrongSound();
+      window.soundMgr.speakWrong();
+
+      setTimeout(() => {
+        leftCard.classList.remove('card-shake-wrong');
+        rightCard.classList.remove('card-shake-wrong');
+      }, 700);
+    }
+  }
+
+  getPinCenter(pinEl, boardEl) {
+    const pinRect = pinEl.getBoundingClientRect();
+    const boardRect = boardEl.getBoundingClientRect();
+    return {
+      x: pinRect.left + pinRect.width / 2 - boardRect.left,
+      y: pinRect.top + pinRect.height / 2 - boardRect.top
+    };
+  }
+
+  drawConnectedLine(theme, leftId, rightId, color) {
+    const board = document.getElementById(`${theme}_matching_board`);
+    const layer = document.getElementById(`${theme}_matched_lines`);
+    const leftPin = document.getElementById(`${leftId}_pin`);
+    const rightPin = document.getElementById(`${rightId}_pin`);
+    if (!board || !layer || !leftPin || !rightPin) return;
+
+    const p1 = this.getPinCenter(leftPin, board);
+    const p2 = this.getPinCenter(rightPin, board);
+
+    const dx = Math.max(50, Math.abs(p2.x - p1.x) * 0.45);
+    const pathD = `M ${p1.x} ${p1.y} C ${p1.x + dx} ${p1.y}, ${p2.x - dx} ${p2.y}, ${p2.x} ${p2.y}`;
+
+    // Tọa độ điểm chính giữa để đặt huy hiệu ngôi sao
+    const midX = (p1.x + p2.x) / 2;
+    const midY = (p1.y + p2.y) / 2;
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.id = `line_${leftId}_${rightId}`;
+
+    g.innerHTML = `
+      <path d="${pathD}" stroke="${color}" stroke-width="7" fill="none" stroke-linecap="round" class="matched-line" filter="url(#${theme}_shadow)"/>
+      <g class="star-badge-group" transform="translate(${midX}, ${midY})">
+        <circle r="14" fill="#FFFFFF" stroke="${color}" stroke-width="3" />
+        <text text-anchor="middle" dominant-baseline="central" font-size="14" y="1">⭐</text>
+      </g>
+    `;
+    layer.appendChild(g);
+  }
+
+  drawTemporaryErrorLine(theme, leftPin, rightPin) {
+    const board = document.getElementById(`${theme}_matching_board`);
+    const tempLine = document.getElementById(`${theme}_temp_line`);
+    if (!board || !tempLine || !leftPin || !rightPin) return;
+
+    const p1 = this.getPinCenter(leftPin, board);
+    const p2 = this.getPinCenter(rightPin, board);
+    const dx = Math.max(50, Math.abs(p2.x - p1.x) * 0.45);
+    const pathD = `M ${p1.x} ${p1.y} C ${p1.x + dx} ${p1.y}, ${p2.x - dx} ${p2.y}, ${p2.x} ${p2.y}`;
+
+    tempLine.setAttribute('d', pathD);
+    tempLine.setAttribute('stroke', '#EF4444');
+    tempLine.setAttribute('stroke-width', '5');
+    tempLine.setAttribute('fill', 'none');
+    tempLine.style.display = 'block';
+
+    setTimeout(() => {
+      tempLine.style.display = 'none';
+    }, 600);
+  }
+
+  redrawMatchingLines(theme) {
+    const game = this.matchingData[theme];
+    if (!game || !game.matchedPairs || game.matchedPairs.length === 0) return;
+    const layer = document.getElementById(`${theme}_matched_lines`);
+    if (!layer) return;
+
+    layer.innerHTML = '';
+    game.matchedPairs.forEach(pair => {
+      this.drawConnectedLine(theme, pair.leftId, pair.rightId, pair.color);
+    });
+  }
+
   renderHome() {
     document.querySelectorAll('.game-select-card').forEach(card => {
-      card.addEventListener('click', () => {
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.card-mode-pills')) return;
         const view = card.dataset.targetView;
-        this.switchView(view);
+        if (['nature', 'garden', 'dessert'].includes(view)) {
+          this.openSheetMode(view, 'match');
+        } else {
+          this.switchView(view);
+        }
       });
     });
 

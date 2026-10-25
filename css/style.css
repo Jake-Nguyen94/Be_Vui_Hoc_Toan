@@ -711,6 +711,46 @@ body {
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
+/* Nút chọn chế độ trực tiếp trên thẻ trang chủ */
+.card-mode-pills {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  z-index: 5;
+}
+
+.pill-mode-btn {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.pill-mode-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.pill-mode-btn.btn-match-tag {
+  background: linear-gradient(135deg, #F59E0B, #EA580C);
+  color: white;
+  border-color: #FED7AA;
+  box-shadow: 0 3px 0 #9A3412;
+}
+
+.pill-mode-btn.btn-select-tag {
+  background: rgba(255, 255, 255, 0.92);
+  color: #1E3A8A;
+  border-color: #93C5FD;
+  box-shadow: 0 3px 0 #60A5FA;
+}
+
 /* ==========================================================================
    CHUYỂN MÀN HÌNH & KHUNG PHIẾU BÀI TẬP
    ========================================================================== */
@@ -1607,6 +1647,343 @@ body {
 }
 
 /* ==========================================================================
+   TÍNH NĂNG MỚI: BANNER NỐI HÌNH TRÊN TRANG CHỦ & THANH CHUYỂN CHẾ ĐỘ
+   ========================================================================== */
+.home-feature-banner {
+  background: linear-gradient(135deg, #FEF08A 0%, #FDE047 30%, #F472B6 100%);
+  border: 3.5px solid #D97706;
+  border-radius: 24px;
+  padding: 14px 22px;
+  margin: 16px auto 20px;
+  max-width: 860px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 6px 0 #B45309, 0 12px 24px rgba(217, 119, 6, 0.2);
+  flex-wrap: wrap;
+}
+
+.feature-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+}
+
+.feature-banner-left .feature-icon {
+  font-size: 36px;
+  animation: pulseStar 1.5s infinite alternate;
+}
+
+.feature-title {
+  font-size: 19px;
+  font-weight: 800;
+  color: #78350F;
+  letter-spacing: -0.3px;
+}
+
+.feature-desc {
+  font-size: 14px;
+  font-weight: 700;
+  color: #831843;
+}
+
+.btn-feature-try {
+  background: linear-gradient(180deg, #EC4899 0%, #DB2777 100%);
+  color: white;
+  border: 2.5px solid #9D174D;
+  box-shadow: 0 4px 0 #831843;
+  padding: 10px 22px;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-feature-try:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 0 #831843;
+}
+
+/* Thanh chuyển chế độ làm bài (Mode bar) */
+.worksheet-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 auto 24px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 2.5px solid #93C5FD;
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.1);
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.mode-bar-label {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1E3A8A;
+}
+
+.mode-tab-btn {
+  background: #EFF6FF;
+  border: 2px solid #93C5FD;
+  border-radius: 999px;
+  padding: 6px 18px;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: inherit;
+  color: #1E40AF;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-tab-btn:hover {
+  background: #DBEAFE;
+  transform: translateY(-1px);
+}
+
+.mode-tab-btn.active {
+  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+  border-color: #B45309;
+  color: white;
+  box-shadow: 0 3px 0 #92400E;
+}
+
+/* ==========================================================================
+   BẢNG NỐI KẾT QUẢ ĐÚNG (MATCHING BOARD)
+   ========================================================================== */
+.matching-board-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 480px;
+  margin: 10px 0 20px;
+  padding: 10px;
+  user-select: none;
+}
+
+.matching-board-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: 60px;
+  position: relative;
+  z-index: 2;
+}
+
+.matching-col-left,
+.matching-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  justify-content: space-around;
+}
+
+/* Card bên trái: Chứa hình ảnh để đếm */
+.match-card-left {
+  background: linear-gradient(180deg, #FFFFFF 0%, #EFF6FF 100%);
+  border: 3.5px solid #60A5FA;
+  border-radius: 20px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 5px 0 #2563EB, 0 8px 16px rgba(37, 99, 235, 0.12);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.match-card-left:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #2563EB;
+  background: #F0F7FF;
+}
+
+.match-card-left.active-selection {
+  background: #FEF9C3;
+  border-color: #F59E0B;
+  box-shadow: 0 5px 0 #D97706, 0 0 0 4px rgba(245, 158, 11, 0.3);
+  transform: scale(1.03);
+}
+
+.match-card-left.matched {
+  background: linear-gradient(180deg, #F0FDF4 0%, #DCFCE7 100%);
+  border-color: #10B981;
+  box-shadow: 0 5px 0 #059669;
+  cursor: default;
+}
+
+.match-card-left-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+  min-height: 52px;
+}
+
+.match-card-title-hint {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1E40AF;
+  display: block;
+  width: 100%;
+}
+
+/* Card bên phải: Chứa con số kết quả */
+.match-card-right {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FEF9C3 100%);
+  border: 3.5px solid #FBBF24;
+  border-radius: 20px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 5px 0 #D97706, 0 8px 16px rgba(217, 119, 6, 0.12);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+}
+
+.match-card-right:hover {
+  transform: translateY(-2px) scale(1.02);
+  border-color: #F59E0B;
+  background: #FEF08A;
+}
+
+.match-card-right.active-selection {
+  background: #FEF08A;
+  border-color: #F59E0B;
+  box-shadow: 0 5px 0 #D97706, 0 0 0 4px rgba(245, 158, 11, 0.3);
+  transform: scale(1.03);
+}
+
+.match-card-right.matched {
+  background: linear-gradient(180deg, #F0FDF4 0%, #DCFCE7 100%);
+  border-color: #10B981;
+  box-shadow: 0 5px 0 #059669;
+  cursor: default;
+}
+
+.match-number-badge {
+  font-size: 28px;
+  font-weight: 800;
+  color: #78350F;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #FEF08A 0%, #FDE047 100%);
+  border: 2.5px solid #F59E0B;
+  box-shadow: 0 3px 0 #D97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.match-card-right.matched .match-number-badge {
+  background: #10B981;
+  color: white;
+  border-color: #047857;
+  box-shadow: 0 3px 0 #047857;
+}
+
+/* Các điểm nút kết nối (Pins / Anchors) */
+.matching-pin {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 4px solid #3B82F6;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.matching-pin::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3B82F6;
+  display: block;
+}
+
+.pin-right {
+  border-color: #F59E0B;
+}
+
+.pin-right::after {
+  background: #F59E0B;
+}
+
+.matching-pin:hover,
+.matching-pin.pin-active {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.4);
+}
+
+.matching-pin.matched {
+  border-color: #10B981;
+  background: #10B981;
+}
+
+.matching-pin.matched::after {
+  background: white;
+}
+
+/* Lớp SVG hiển thị đường nối */
+.matching-svg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.matched-line {
+  stroke-linecap: round;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+  animation: drawLine 0.4s ease-out;
+}
+
+.preview-drag-line {
+  stroke-dasharray: 8 6;
+  animation: dashAnimation 0.8s linear infinite;
+}
+
+@keyframes dashAnimation {
+  to { stroke-dashoffset: -28; }
+}
+
+@keyframes drawLine {
+  from { stroke-dasharray: 800; stroke-dashoffset: 800; }
+  to { stroke-dashoffset: 0; }
+}
+
+.star-badge-group {
+  animation: popSuccess 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-shake-wrong {
+  animation: shakeWrong 0.4s ease;
+}
+
+/* ==========================================================================
    PRINT STYLES (@media print) - IN PHIẾU BÀI TẬP A4 CHUẨN ĐẸP
    ========================================================================== */
 @media print {
@@ -1617,6 +1994,7 @@ body {
 
   .app-header,
   .worksheet-toolbar,
+  .worksheet-mode-bar,
   .coloring-controls,
   .hero-section,
   .victory-modal-overlay,
